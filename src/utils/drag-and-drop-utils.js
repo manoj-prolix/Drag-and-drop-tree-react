@@ -11,17 +11,21 @@ import {
 const nodeDragSource = {
     beginDrag(props) {
         props.startDrag(props);
+
         return {
             node: props.node,
             path: props.path,
         };
     },
+
     endDrag(props, monitor) {
         props.endDrag(monitor.getDropResult());
     },
+
     isDragging(props, monitor) {
         const dropTargetNode = monitor.getItem().node;
         const draggedNode    = props.node;
+
         return draggedNode === dropTargetNode;
     }
 };
@@ -62,22 +66,35 @@ function canDrop(dropTargetProps, monitor, isHover = false) {
         aboveNode = rowAbove.node;
     }
     const targetDepth = getTargetDepth(dropTargetProps, monitor);
-    const draggedNode = monitor.getItem().node;
+    const draggedNode = monitor.getItem();
 
-    return (targetDepth < abovePath.length || typeof aboveNode.children !== 'function')
-        && (!(dropTargetProps.node === draggedNode && isHover === true)
-        || targetDepth !== (dropTargetProps.path.length - 1));
+    return (draggedNode.path.length === dropTargetProps.path.length) && (
+        // Either we're not adding to the children of the row above...
+        targetDepth < abovePath.length ||
+        // ...or we guarantee it's not a function we're trying to add to
+        typeof aboveNode.children !== 'function'
+    ) && (
+        // Ignore when hovered above the identical node...
+        !(dropTargetProps.node === draggedNode.node && isHover === true) ||
+        // ...unless it's at a different level than the current one
+        targetDepth !== (dropTargetProps.path.length - 1)
+    );
 }
 
 const nodeDropTarget = {
     drop(dropTargetProps, monitor) {
-        const draggedPath = monitor.getItem().path;
-        if (draggedPath.length !== dropTargetProps.path.length) {
-            return null;
+        const draggedNode = monitor.getItem();
+        if (draggedNode.path.length !== dropTargetProps.path.length) {
+            return {
+                node:             draggedNode.node,
+                path:             draggedNode.path,
+                minimumTreeIndex: draggedNode.path[draggedNode.path.length - 1],
+                depth:            (draggedNode.path.length - 1),
+            };
         }
         return {
-            node:             monitor.getItem().node,
-            path:             monitor.getItem().path,
+            node:             draggedNode.node,
+            path:             draggedNode.path,
             minimumTreeIndex: dropTargetProps.treeIndex,
             depth:            getTargetDepth(dropTargetProps, monitor),
         };

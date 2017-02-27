@@ -1,5 +1,48 @@
-# React Sortable Tree MODIFIED
+# Drag and Drop Tree
+
+### This is modified version of react-sortable-tree that I modified for our project
+##### here you can download the original https://www.npmjs.com/package/react-sortable-tree
+
+[![NPM](https://nodei.co/npm/react-sortable-tree.png)](https://npmjs.org/package/react-sortable-tree)
+
+[![tree200](https://cloud.githubusercontent.com/assets/4413963/18860410/26f64de8-84b8-11e6-9284-350308eed30a.png)](https://fritz-c.github.io/react-sortable-tree/)
+
+### [Demo](https://fritz-c.github.io/react-sortable-tree/)
+[![demo](https://cloud.githubusercontent.com/assets/4413963/19334888/2be8261c-913a-11e6-9508-4b347ae114b4.gif)](https://fritz-c.github.io/react-sortable-tree/)
+
+### Features
+
+- Works right out of the box, but is highly customizable
+
+## Example
+
+```jsx
+import React, { Component } from 'react';
+import SortableTree from 'react-sortable-tree';
+
+export default class Tree extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            treeData: [{ title: 'Chicken', children: [ { title: 'Egg' } ] }],
+        };
+    }
+
+    render() {
+        return (
+            <div style={{ height: 400 }}>
+                <SortableTree
+                    treeData={this.state.treeData}
+                    onChange={treeData => this.setState({ treeData })}
+                />
+            </div>
+        );
+    }
+}
+
 ```
+
 ## Options
 
 Property                  | Type           | Default             | Required | Description
@@ -29,7 +72,7 @@ nodeContentRenderer       | any            | NodeRendererDefault |          | Ov
 
 Need a hand turning your flat data into nested tree data?
 Want to perform add/remove operations on the tree data without creating your own recursive function?
-Check out the helper functions exported from [`tree-data-utils.js`](https://github.com/Hovakimyan/React-Sortable-Tree-Modified/blob/master/src/utils/tree-data-utils.js).
+Check out the helper functions exported from [`tree-data-utils.js`](https://github.com/fritz-c/react-sortable-tree/blob/master/src/utils/tree-data-utils.js).
 
 Notable among the available functions:
 
@@ -51,7 +94,7 @@ If your hobbies happen to include writing documentation, by all means submit a p
 | Firefox | Yes |
 | Safari | Yes |
 | IE >= 10 | Yes |
-| IE 9 | Broken due to flexbox issues. [Plan to fix.](https://github.com/Hovakimyan/React-Sortable-Tree-Modified/issues/6)  |
+| IE 9 | Broken due to flexbox issues. [Plan to fix.](https://github.com/fritz-c/react-sortable-tree/issues/6)  |
 
 ## Troubleshooting
 
@@ -79,7 +122,13 @@ npm start
 npm run lint
 
 # Lints and builds the code, placing the result in the dist directory.
-# This build is necessary to reflect changes if you're
+# This build is necessary to reflect changes if you're 
 #  `npm link`-ed to this repository from another local project.
 npm run build
 ```
+
+Pull requests are welcome!
+
+## License
+
+MIT

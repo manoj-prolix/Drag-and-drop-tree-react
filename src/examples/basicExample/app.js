@@ -14,19 +14,34 @@ class App extends Component {
     constructor(props) {
         super(props);
 
+        const renderDepthTitle = ({ path }) => `Depth: ${path.length}`;
+
         this.state = {
             searchString: '',
             searchFocusIndex: 0,
             searchFoundCount: null,
             treeData: [
                 {
-                    title: <div><strong>asdk f</strong></div>,
+                    title: '`title`',
                     subtitle: '`subtitle`',
+                    expanded: true,
                     children: [
                         {
-                            title: <div><strong>asdk f</strong></div>,
+                            title: 'Child Node',
                             subtitle: 'Defined in `children` array belonging to parent',
-                        }
+                        },
+                        {
+                            title: 'Nested structure is rendered virtually',
+                            subtitle: (
+                                <span>
+                                    The tree uses&nbsp;
+                                    <a href="https://github.com/bvaughn/react-virtualized">
+                                        react-virtualized
+                                    </a>
+                                    &nbsp;and the relationship lines are more of a visual trick.
+                                </span>
+                            ),
+                        },
                     ],
                 },
                 {
@@ -34,7 +49,11 @@ class App extends Component {
                     title: 'Any node can be the parent or child of any other node',
                     children: [
                         {
+                            expanded: true,
                             title: 'Chicken',
+                            children: [
+                                { title: 'Egg' },
+                            ],
                         },
                     ],
                 },
@@ -49,6 +68,10 @@ class App extends Component {
                         {
                             title: 'Bruce',
                             subtitle: ({ node }) => `expanded: ${node.expanded ? 'true' : 'false'}`,
+                            children: [
+                                { title: 'Bruce Jr.' },
+                                { title: 'Brucette' },
+                            ],
                         },
                     ],
                 },
@@ -57,8 +80,49 @@ class App extends Component {
                     subtitle: 'Settings, behavior, etc.',
                     children: [
                         {
+                            title: (
+                                <div>
+                                    <div
+                                        style={{
+                                            backgroundColor: 'gray',
+                                            display: 'inline-block',
+                                            borderRadius: 10,
+                                            color: '#FFF',
+                                            padding: '0 5px',
+                                        }}
+                                    >
+                                        Any Component
+                                    </div>
+
+                                    &nbsp;can be used for `title`
+                                </div>
+                            ),
+                        },
+                        {
+                            expanded: true,
                             title: 'Limit nesting with `maxDepth`',
                             subtitle: `It's set to ${maxDepth} for this example`,
+                            children: [
+                                {
+                                    expanded: true,
+                                    title: renderDepthTitle,
+                                    children: [
+                                        {
+                                            expanded: true,
+                                            title: renderDepthTitle,
+                                            children: [
+                                                { title: renderDepthTitle },
+                                                {
+                                                    title: ({ path }) => (path.length >= maxDepth ?
+                                                        'This cannot be dragged deeper' :
+                                                        'This can be dragged deeper'
+                                                    ),
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            ],
                         },
                         {
                             title: 'When node contents are really long, it will cause a horizontal scrollbar' +
@@ -97,9 +161,9 @@ class App extends Component {
 
     render() {
         const projectName = 'React Sortable Tree';
-        const authorName = 'Hovakimyan';
-        const authorUrl = 'https://github.com/Hovakimyan/React-Sortable-Tree-Modified';
-        const githubUrl = 'https://github.com/Hovakimyan/React-Sortable-Tree-Modified';
+        const authorName = 'Chris Fritz';
+        const authorUrl = 'https://github.com/fritz-c';
+        const githubUrl = 'https://github.com/fritz-c/react-sortable-tree';
 
         const {
             treeData,
@@ -107,6 +171,24 @@ class App extends Component {
             searchFocusIndex,
             searchFoundCount,
         } = this.state;
+
+        const alertNodeInfo = ({
+            node,
+            path,
+            treeIndex,
+            lowerSiblingCounts: _lowerSiblingCounts,
+        }) => {
+            const objectString = Object.keys(node)
+                .map(k => (k === 'children' ? 'children: Array' : `${k}: '${node[k]}'`))
+                .join(',\n   ');
+
+            alert( // eslint-disable-line no-alert
+                'Info passed to the button generator:\n\n' +
+                `node: {\n   ${objectString}\n},\n` +
+                `path: [${path.join(', ')}],\n` +
+                `treeIndex: ${treeIndex}`
+            );
+        };
 
         const selectPrevMatch = () => this.setState({
             searchFocusIndex: searchFocusIndex !== null ?
@@ -143,6 +225,8 @@ class App extends Component {
                     <button onClick={this.collapseAll}>
                         Collapse All
                     </button>
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <form
                         style={{ display: 'inline-block' }}
                         onSubmit={(event) => {
@@ -196,7 +280,27 @@ class App extends Component {
                                 )
                             }
                             maxDepth={maxDepth}
+                            searchQuery={searchString}
+                            searchFocusOffset={searchFocusIndex}
+                            searchFinishCallback={matches =>
+                                this.setState({
+                                    searchFoundCount: matches.length,
+                                    searchFocusIndex: matches.length > 0 ? searchFocusIndex % matches.length : 0,
+                                })
+                            }
                             isVirtualized={isVirtualized}
+                            generateNodeProps={rowInfo => ({
+                                buttons: [
+                                    <button
+                                        style={{
+                                            verticalAlign: 'middle',
+                                        }}
+                                        onClick={() => alertNodeInfo(rowInfo)}
+                                    >
+                                        ℹ
+                                    </button>,
+                                ],
+                            })}
                         />
                     </div>
 

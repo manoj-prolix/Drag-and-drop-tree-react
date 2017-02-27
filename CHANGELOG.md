@@ -1,1 +1,1 @@
-See the GitHub [Releases](https://github.com/Hovakimyan/React-Sortable-Tree-Modified/releases) for information on updates.
+See the GitHub [Releases](https://github.com/fritz-c/react-sortable-tree/releases) for information on updates.

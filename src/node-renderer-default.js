@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { getIEVersion } from './utils/browser-utils';
 import baseStyles from './node-renderer-default.scss';
-import { isDescendant } from './utils/tree-data-utils';
 
 let styles = baseStyles;
 // Add extra classes in browsers that don't support flex
@@ -36,52 +35,59 @@ const NodeRendererDefault = ({
     endDrag: _endDrag,
     ...otherProps,
 }) => {
-    const isDraggedDescendant = draggedNode && isDescendant(draggedNode, node);
-
-    const content = connectDragSource((
+    let handle;
+    if (typeof node.children === 'function' && node.expanded) {
+        // Show a loading symbol on the handle when the children are expanded
+        //  and yet still defined by a function (a callback to fetch the children)
+        handle = (
+            <div className={styles.loadingHandle}>
+                <div className={styles.loadingCircle}>
+                    <div className={styles.loadingCirclePoint} />
+                    <div className={styles.loadingCirclePoint} />
+                    <div className={styles.loadingCirclePoint} />
+                    <div className={styles.loadingCirclePoint} />
+                    <div className={styles.loadingCirclePoint} />
+                    <div className={styles.loadingCirclePoint} />
+                    <div className={styles.loadingCirclePoint} />
+                    <div className={styles.loadingCirclePoint} />
+                    <div className={styles.loadingCirclePoint} />
+                    <div className={styles.loadingCirclePoint} />
+                    <div className={styles.loadingCirclePoint} />
+                    <div className={styles.loadingCirclePoint} />
+                </div>
+            </div>
+        );
+    } else {
+        // Show the handle used to initiate a drag-and-drop
+        handle = connectDragSource((
+            <div className={styles.moveHandle} />
+        ), { dropEffect: 'copy' });
+    }
+    return (
         <div
             style={{ height: '100%' }}
+            onClick={() => toggleChildrenVisibility && toggleChildrenVisibility({node, path, treeIndex})}
             {...otherProps}
         >
-            {toggleChildrenVisibility && node.children && node.children.length > 0 && (
-                <div>
-                    <button
-                        aria-label={node.expanded ? 'Collapse' : 'Expand'}
-                        className={node.expanded ? styles.collapseButton : styles.expandButton}
-                        style={{ left: -0.5 * scaffoldBlockPxWidth }}
-                        onClick={() => toggleChildrenVisibility({node, path, treeIndex})}
-                    />
-
-                    {node.expanded && !isDragging &&
-                    <div
-                        style={{ width: scaffoldBlockPxWidth }}
-                        className={styles.lineChildren}
-                    />
-                    }
-                </div>
-            )}
-
             <div className={styles.rowWrapper}>
                 {/* Set the row preview to be used during drag and drop */}
                 {connectDragPreview(
                     <div
                         className={styles.row +
-                        (isDragging && isOver ? ` ${styles.rowLandingPad}` : '') +
-                        (isDragging && !isOver && canDrop ? ` ${styles.rowCancelPad}` : '') +
-                        (isSearchMatch ? ` ${styles.rowSearchMatch}` : '') +
-                        (isSearchFocus ? ` ${styles.rowSearchFocus}` : '') +
-                        (className ? ` ${className}` : '')
+                            (isDragging && isOver && !canDrop ? ` ${styles.rowCancelPad}` : '') +
+                            (isDragging && !isOver && !canDrop ? ` ${styles.rowCancelPad}` : '') +
+                            (isDragging && isOver && canDrop ? ` ${styles.rowLandingPad}` : '') +
+                            (isDragging && !isOver && canDrop ? ` ${styles.rowCancelPad}` : '') +
+                            (className ? ` ${className}` : '')
                         }
-                        style={{
-                            opacity: isDraggedDescendant ? 0.5 : 1,
-                            ...style,
-                        }}
                     >
+                        {handle}
+
                         <div className={styles.rowContents}>
                             <div className={styles.rowLabel}>
                                 <span
                                     className={styles.rowTitle +
-                                    (node.subtitle ? ` ${styles.rowTitleWithSubtitle}` : '')
+                                        (node.subtitle ? ` ${styles.rowTitleWithSubtitle}` : '')
                                     }
                                 >
                                     {typeof node.title === 'function' ?
@@ -91,7 +97,7 @@ const NodeRendererDefault = ({
                                 </span>
 
                                 {node.subtitle &&
-                                <span className={styles.rowSubtitle}>
+                                    <span className={styles.rowSubtitle}>
                                         {typeof node.subtitle === 'function' ?
                                             node.subtitle({node, path, treeIndex }) :
                                             node.subtitle
@@ -112,8 +118,7 @@ const NodeRendererDefault = ({
                 )}
             </div>
         </div>
-        ), { dropEffect: 'copy' });
-    return content;
+    );
 };
 
 NodeRendererDefault.propTypes = {
