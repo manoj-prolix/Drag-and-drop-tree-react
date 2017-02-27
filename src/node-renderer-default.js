@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { getIEVersion } from './utils/browser-utils';
 import baseStyles from './node-renderer-default.scss';
+import { isDescendant } from './utils/tree-data-utils';
 
 let styles = baseStyles;
 // Add extra classes in browsers that don't support flex
