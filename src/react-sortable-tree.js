@@ -1,6 +1,6 @@
 /*!
  * react-sortable-tree
- * Copyright 2016 Chris Fritz All rights reserved.
+ * Copyright 2016 Hovakimyan All rights reserved.
  * @license Open source under the MIT License
  */
 
@@ -17,6 +17,7 @@ import {
     changeNodeAtPath,
     removeNodeAtPath,
     insertNode,
+    addNodeUnderParent,
     getDescendantCount,
     find,
 } from './utils/tree-data-utils';
@@ -75,6 +76,8 @@ class ReactSortableTree extends Component {
         this.startDrag                = this.startDrag.bind(this);
         this.dragHover                = this.dragHover.bind(this);
         this.endDrag                  = this.endDrag.bind(this);
+        this.removeNode               = this.removeNode.bind(this);
+        this.addNode                  = this.addNode.bind(this);
     }
 
     componentWillMount() {
@@ -87,7 +90,7 @@ class ReactSortableTree extends Component {
         const treeData = changeNodeAtPath({
             treeData: this.props.treeData,
             path,
-            newNode: ({ node }) => ({ ...node, expanded: !node.expanded }),
+            newNode: ({ node }) => ({ ...node }),
             getNodeKey: this.props.getNodeKey,
         });
 
@@ -100,6 +103,25 @@ class ReactSortableTree extends Component {
                 expanded: !targetNode.expanded,
             });
         }
+    }
+
+    removeNode(path) {
+        const treeData = removeNodeAtPath({
+            treeData: this.props.treeData,
+            path,
+            getNodeKey: this.props.getNodeKey,
+        });
+        this.props.onChange(treeData);
+    }
+
+    addNode(parentKey, newNode) {
+        const treeData = addNodeUnderParent({
+            treeData: this.props.treeData,
+            newNode,
+            parentKey,
+            getNodeKey: this.props.getNodeKey,
+        });
+        this.props.onChange(treeData.treeData);
     }
 
     moveNode({ node, depth, minimumTreeIndex }) {
@@ -406,14 +428,13 @@ class ReactSortableTree extends Component {
             matchKeys[nodeKey] === this.props.searchFocusOffset;
 
         const nodeProps = !this.props.generateNodeProps ? {} : this.props.generateNodeProps({
-            node,
-            path,
-            lowerSiblingCounts,
-            treeIndex,
-            isSearchMatch,
-            isSearchFocus,
-        });
-
+                node,
+                path,
+                lowerSiblingCounts,
+                treeIndex,
+                isSearchMatch,
+                isSearchFocus,
+            });
         return (
             <TreeNodeRenderer
                 style={style}
@@ -432,8 +453,11 @@ class ReactSortableTree extends Component {
                 dragHover={this.dragHover}
             >
                 <NodeContentRenderer
+                    rendererProps={this.props.rendererProps}
                     node={node}
                     path={path}
+                    removeNode={this.removeNode}
+                    addNode={this.addNode}
                     isSearchMatch={isSearchMatch}
                     isSearchFocus={isSearchFocus}
                     treeIndex={treeIndex}
@@ -513,6 +537,7 @@ ReactSortableTree.propTypes = {
     // This is an advanced option for complete customization of the appearance.
     // It is best to copy the component in `node-renderer-default.js` to use as a base, and customize as needed.
     nodeContentRenderer: PropTypes.any,
+    rendererProps: PropTypes.any,
 
     // Determine the unique key used to identify each node and
     // generate the `path` array passed in callbacks.
