@@ -68,7 +68,7 @@ function canDrop(dropTargetProps, monitor, isHover = false) {
     const targetDepth = getTargetDepth(dropTargetProps, monitor);
     const draggedNode = monitor.getItem();
 
-    return /*(draggedNode.path.length === dropTargetProps.path.length) &&*/ (
+    return /* (draggedNode.path.length === dropTargetProps.path.length) && */ (
         // Either we're not adding to the children of the row above...
         targetDepth < abovePath.length ||
         // ...or we guarantee it's not a function we're trying to add to

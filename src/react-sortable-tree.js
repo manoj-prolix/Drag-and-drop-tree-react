@@ -428,13 +428,13 @@ class ReactSortableTree extends Component {
             matchKeys[nodeKey] === this.props.searchFocusOffset;
 
         const nodeProps = !this.props.generateNodeProps ? {} : this.props.generateNodeProps({
-                node,
-                path,
-                lowerSiblingCounts,
-                treeIndex,
-                isSearchMatch,
-                isSearchFocus,
-            });
+            node,
+            path,
+            lowerSiblingCounts,
+            treeIndex,
+            isSearchMatch,
+            isSearchFocus,
+        });
         return (
             <TreeNodeRenderer
                 style={style}
