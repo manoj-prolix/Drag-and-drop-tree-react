@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import { getIEVersion } from './utils/browser-utils';
 import _ from 'lodash';
+import { getIEVersion } from './utils/browser-utils';
 import baseStyles from './node-renderer-default.scss';
 
 let styles = baseStyles;
@@ -19,10 +19,9 @@ const NodeRendererDefault = ({
     toggleChildrenVisibility,
     connectDragPreview,
     connectDragSource,
+    showRedHover,
     isDragging,
     isOver,
-    showRedHover,
-    canDrop,
     node,
     path,
     treeIndex,
