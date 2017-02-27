@@ -56,6 +56,8 @@ function getTargetDepth(dropTargetProps, monitor) {
 
     return targetDepth;
 }
+let dropTargetPropsDefault = {};
+let draggedNodeDefault = {};
 
 function canDrop(dropTargetProps, monitor, isHover = false) {
     let abovePath      = [];
@@ -67,6 +69,8 @@ function canDrop(dropTargetProps, monitor, isHover = false) {
     }
     const targetDepth = getTargetDepth(dropTargetProps, monitor);
     const draggedNode = monitor.getItem();
+    dropTargetPropsDefault = dropTargetProps;
+    draggedNodeDefault = draggedNode;
 
     return /* (draggedNode.path.length === dropTargetProps.path.length) && */ (
         // Either we're not adding to the children of the row above...
@@ -79,6 +83,12 @@ function canDrop(dropTargetProps, monitor, isHover = false) {
         // ...unless it's at a different level than the current one
         targetDepth !== (dropTargetProps.path.length - 1)
     );
+}
+function showRedHover() {
+    if (Object.keys(dropTargetPropsDefault).length === 0 || Object.keys(draggedNodeDefault).length === 0) {
+        return false;
+    }
+    return draggedNodeDefault.path.length === dropTargetPropsDefault.path.length;
 }
 
 const nodeDropTarget = {
@@ -129,6 +139,7 @@ function nodeDropTargetPropInjection(connect, monitor) {
         isOver:            monitor.isOver(),
         canDrop:           monitor.canDrop(),
         draggedNode:       dragged ? dragged.node : null,
+        showRedHover:      showRedHover(),
     };
 }
 

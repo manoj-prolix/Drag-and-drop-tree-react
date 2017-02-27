@@ -8,6 +8,7 @@ const TreeNode = ({
     isOver,
     draggedNode,
     canDrop,
+    showRedHover,
     getPrevRow: _getPrevRow, // Delete from otherProps
     node:       _node,       // Delete from otherProps
     path:       _path,       // Delete from otherProps
@@ -15,7 +16,7 @@ const TreeNode = ({
     dragHover:  _dragHover,  // Delete from otherProps
     ...otherProps,
 }) => {
-    const newProps = _.omit(otherProps, [ 'treeIndex', 'listIndex', 'lowerSiblingCounts', 'scaffoldBlockPxWidth', 'swapFrom', 'swapLength', 'swapDepth' ]);
+    const newProps = _.omit(otherProps, [ 'showRedHover', 'treeIndex', 'listIndex', 'lowerSiblingCounts', 'scaffoldBlockPxWidth', 'swapFrom', 'swapLength', 'swapDepth' ]);
 
     return connectDropTarget(
         <div
@@ -27,6 +28,7 @@ const TreeNode = ({
                 {Children.map(children, child => cloneElement(child, {
                     isOver,
                     canDrop,
+                    showRedHover,
                     draggedNode,
                 }))}
             </div>
@@ -52,6 +54,7 @@ TreeNode.propTypes = {
     isOver:            PropTypes.bool.isRequired,
     canDrop:           PropTypes.bool.isRequired,
     draggedNode:       PropTypes.object,
+    showRedHover:       PropTypes.bool,
 };
 
 export default TreeNode;

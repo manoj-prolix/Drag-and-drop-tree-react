@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import _ from 'lodash';
 import { getIEVersion } from './utils/browser-utils';
+import _ from 'lodash';
 import baseStyles from './node-renderer-default.scss';
 
 let styles = baseStyles;
@@ -21,6 +21,7 @@ const NodeRendererDefault = ({
     connectDragSource,
     isDragging,
     isOver,
+    showRedHover,
     canDrop,
     node,
     path,
@@ -59,7 +60,7 @@ const NodeRendererDefault = ({
             <div className={styles.moveHandle} />
         ), { dropEffect: 'copy' });
     }
-    const newProps = _.omit(otherProps, [ 'rendererProps', 'removeNode', 'addNode', 'isSearchMatch', 'isSearchFocus', 'scaffoldBlockPxWidth', 'draggedNode' ]);
+    const newProps = _.omit(otherProps, [ 'showRedHover', 'rendererProps', 'removeNode', 'addNode', 'isSearchMatch', 'isSearchFocus', 'scaffoldBlockPxWidth', 'draggedNode' ]);
 
     return (
         <div
@@ -72,10 +73,10 @@ const NodeRendererDefault = ({
                 {connectDragPreview(
                     <div
                         className={styles.row +
-                            (isDragging && isOver && !canDrop ? ` ${styles.rowCancelPad}` : '') +
-                            (isDragging && !isOver && !canDrop ? ` ${styles.rowCancelPad}` : '') +
-                            (isDragging && isOver && canDrop ? ` ${styles.rowLandingPad}` : '') +
-                            (isDragging && !isOver && canDrop ? ` ${styles.rowCancelPad}` : '') +
+                            (isDragging && isOver && !showRedHover ? ` ${styles.rowCancelPad}` : '') +
+                            (isDragging && !isOver && !showRedHover ? ` ${styles.rowCancelPad}` : '') +
+                            (isDragging && isOver && showRedHover ? ` ${styles.rowLandingPad}` : '') +
+                            (isDragging && !isOver && showRedHover ? ` ${styles.rowCancelPad}` : '') +
                             (className ? ` ${className}` : '')
                         }
                     >
@@ -143,6 +144,7 @@ NodeRendererDefault.propTypes = {
     // Drop target
     isOver:  PropTypes.bool.isRequired,
     canDrop: PropTypes.bool.isRequired,
+    showRedHover: PropTypes.bool.isRequired,
 };
 
 export default NodeRendererDefault;
