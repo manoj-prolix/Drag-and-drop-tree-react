@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { getIEVersion } from './utils/browser-utils';
 import baseStyles from './node-renderer-default.scss';
-import { isDescendant } from './utils/tree-data-utils';
 
 let styles = baseStyles;
 // Add extra classes in browsers that don't support flex
@@ -16,7 +15,6 @@ if (getIEVersion < 10) {
 }
 
 const NodeRendererDefault = ({
-    scaffoldBlockPxWidth,
     toggleChildrenVisibility,
     connectDragPreview,
     connectDragSource,
@@ -24,14 +22,10 @@ const NodeRendererDefault = ({
     isOver,
     canDrop,
     node,
-    draggedNode,
     path,
     treeIndex,
-    isSearchMatch,
-    isSearchFocus,
     buttons,
     className,
-    style = {},
     startDrag: _startDrag,
     endDrag: _endDrag,
     ...otherProps,
