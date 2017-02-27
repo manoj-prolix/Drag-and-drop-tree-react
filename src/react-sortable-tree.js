@@ -1,6 +1,6 @@
 /*!
  * react-sortable-tree
- * Copyright 2016 Hovakimyan All rights reserved.
+ * Copyright 2016 Chris Fritz All rights reserved.
  * @license Open source under the MIT License
  */
 
@@ -90,7 +90,7 @@ class ReactSortableTree extends Component {
         const treeData = changeNodeAtPath({
             treeData: this.props.treeData,
             path,
-            newNode: ({ node }) => ({ ...node }),
+            newNode: ({ node }) => ({ ...node, expanded: !node.expanded }),
             getNodeKey: this.props.getNodeKey,
         });
 
@@ -435,6 +435,7 @@ class ReactSortableTree extends Component {
             isSearchMatch,
             isSearchFocus,
         });
+
         return (
             <TreeNodeRenderer
                 style={style}

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import _ from 'lodash';
 import { getIEVersion } from './utils/browser-utils';
 import baseStyles from './node-renderer-default.scss';
 
@@ -58,11 +59,13 @@ const NodeRendererDefault = ({
             <div className={styles.moveHandle} />
         ), { dropEffect: 'copy' });
     }
+    const newProps = _.omit(otherProps, [ 'rendererProps', 'removeNode', 'addNode', 'isSearchMatch', 'isSearchFocus', 'scaffoldBlockPxWidth', 'draggedNode' ]);
+
     return (
         <div
             style={{ height: '100%' }}
             onClick={() => toggleChildrenVisibility && toggleChildrenVisibility({node, path, treeIndex})}
-            {...otherProps}
+            {...newProps}
         >
             <div className={styles.rowWrapper}>
                 {/* Set the row preview to be used during drag and drop */}

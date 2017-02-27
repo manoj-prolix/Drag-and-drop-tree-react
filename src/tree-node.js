@@ -1,10 +1,9 @@
 import React, { PropTypes, Children, cloneElement } from 'react';
+import _ from 'lodash';
 import styles from './tree-node.scss';
 
 const TreeNode = ({
     children,
-    scaffoldBlockPxWidth,
-    lowerSiblingCounts,
     connectDropTarget,
     isOver,
     draggedNode,
@@ -16,16 +15,14 @@ const TreeNode = ({
     dragHover:  _dragHover,  // Delete from otherProps
     ...otherProps,
 }) => {
-    // Construct the scaffold representing the structure of the tree
-    const scaffoldBlockCount = lowerSiblingCounts.length;
+    const newProps = _.omit(otherProps, [ 'treeIndex', 'listIndex', 'lowerSiblingCounts', 'scaffoldBlockPxWidth', 'swapFrom', 'swapLength', 'swapDepth' ]);
 
     return connectDropTarget(
         <div
-            {...otherProps}
+            {...newProps}
         >
             <div
                 className={styles.nodeContent}
-                style={{ left: scaffoldBlockPxWidth * scaffoldBlockCount }}
             >
                 {Children.map(children, child => cloneElement(child, {
                     isOver,
