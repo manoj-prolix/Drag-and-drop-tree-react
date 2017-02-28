@@ -90,7 +90,7 @@ class ReactSortableTree extends Component {
         const treeData = changeNodeAtPath({
             treeData: this.props.treeData,
             path,
-            newNode: ({ node }) => ({ ...node, expanded: !node.expanded }),
+            newNode: ({ node }) => ({ ...node }),
             getNodeKey: this.props.getNodeKey,
         });
 
