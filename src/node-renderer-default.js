@@ -59,7 +59,7 @@ const NodeRendererDefault = ({
             <div className={styles.moveHandle} />
         ), { dropEffect: 'copy' });
     }
-    const newProps = _.omit(otherProps, [ 'showRedHover', 'rendererProps', 'removeNode', 'addNode', 'isSearchMatch', 'isSearchFocus', 'scaffoldBlockPxWidth', 'draggedNode' ]);
+    const newProps = _.omit(otherProps, [ 'showRedHover', 'listItemProps', 'removeNode', 'addNode', 'isSearchMatch', 'isSearchFocus', 'scaffoldBlockPxWidth', 'draggedNode' ]);
 
     return (
         <div

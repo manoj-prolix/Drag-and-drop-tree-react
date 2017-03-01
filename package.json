@@ -1,6 +1,6 @@
 {
   "name": "drag-and-drop-tree-react",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Drag-and-drop sortable tree",
   "scripts": {
     "build": "npm run lint && npm run build:demo && npm run build:umd",
